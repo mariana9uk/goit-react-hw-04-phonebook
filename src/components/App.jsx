@@ -3,18 +3,19 @@ import { ContactsList } from './ContactsList';
 import { Filter } from './Filter';
 import { useState } from 'react';
 import { useEffect } from 'react';
+const savedContacts = window.localStorage.getItem('contact');
+const getSavedContacts = () => {
 
+  if (savedContacts) {
+    return JSON.parse(savedContacts);
+  }
+};
 export const App = () => {
-  const [contacts, setContacts] = useState(() => {
-    const savedContacts = window.localStorage.getItem('contact');
-    if (savedContacts !== null) {
-      return JSON.parse(savedContacts);
-    }
-  });
+  const [contacts, setContacts] = useState(getSavedContacts);
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
-    window.localStorage.setItem('contact', JSON.stringify(contacts));
+    localStorage.setItem('contact', JSON.stringify(contacts));
   }, [contacts]);
 
   const addContact = newContact => {
@@ -39,9 +40,12 @@ export const App = () => {
   };
 
   const getFilteredContacts = () => {
+    if (!savedContacts) {
+      return
+    }
     const normalizedFilter = filter.toLowerCase();
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizedFilter)
+    return (
+      contacts.filter(contact => contact.name.toLowerCase().includes(normalizedFilter))
     );
   };
 
