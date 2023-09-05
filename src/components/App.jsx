@@ -4,13 +4,19 @@ import { Filter } from './Filter';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
+const getSavedContacts = () => {
+  const savedContacts = localStorage.getItem('contact');
+  if (savedContacts !== null) {
+    return JSON.parse(savedContacts);
+  }
+};
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(getSavedContacts);
   const [filter, setFilter] = useState('');
 
-   useEffect(()=>{localStorage.setItem("contact", JSON.stringify(contacts))
-  }, [contacts])
-useEffect(()=>{}, [])
+  useEffect(() => {
+    localStorage.setItem('contact', JSON.stringify(contacts));
+  }, [contacts]);
 
   const addContact = newContact => {
     const isContactExists = contacts.find(
@@ -24,10 +30,10 @@ useEffect(()=>{}, [])
     }
   };
   const removeContact = contactId => {
-    setContacts(prevState => prevState.filter(
-          contact => contact.id !== contactId
-        ))
-      };
+    setContacts(prevState =>
+      prevState.filter(contact => contact.id !== contactId)
+    );
+  };
 
   const handleFilterChange = event => {
     setFilter(event.target.value);
@@ -39,19 +45,6 @@ useEffect(()=>{}, [])
       contact.name.toLowerCase().includes(normalizedFilter)
     );
   };
-  // componentDidUpdate(prevProps, prevState){
-  //   if(prevState.contacts!==this.state.contacts){
-  // localStorage.setItem("contact", JSON.stringify(this.state.contacts))
-  //   }
-  // }
-  // componentDidMount(){
-  //  const contacts= localStorage.getItem("contact");
-  //  const parsedContacts = JSON.parse(contacts);
-  //  if (parsedContacts) {
-  //   this.setState({contacts: parsedContacts})
-  //  }
-
-  // }
 
   const filteredContacts = getFilteredContacts();
   return (
