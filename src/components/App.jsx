@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 
 const getSavedContacts = () => {
   const savedContacts = localStorage.getItem('contact');
-  if (savedContacts !== null) {
+  if (savedContacts) {
     return JSON.parse(savedContacts);
   }
 };
